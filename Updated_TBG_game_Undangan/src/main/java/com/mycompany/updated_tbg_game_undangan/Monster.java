@@ -6,8 +6,8 @@ import java.util.Random;
 public class Monster {
     private String name;
     private boolean isElite;
-    private int maxHP;
-    private int currentHP;
+    int maxHP;
+    int currentHP;
     private int atk;
     private int def;
     private int speed;

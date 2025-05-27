@@ -37,7 +37,7 @@ public abstract class Character {
 
     public boolean allocateStats(int atk, int mAtk, int def, int mDef, int intelligence, int speed, int luck) {
         int total = atk + mAtk + def + mDef + intelligence + speed + luck;
-        if (total = statPoints) {
+        if (total == statPoints) {
             System.out.println("Not enough statpoints to allocate...");
             return false;
         }

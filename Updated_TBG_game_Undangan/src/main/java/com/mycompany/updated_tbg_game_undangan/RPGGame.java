@@ -106,7 +106,7 @@ public class RPGGame {
             System.out.println("Elite Monster Encounter! You face the " + elite.getName() + "!");
             battle(elite);
         } else {
-            System.out.println("There are no enemies here, Safe for now...");
+            System.out.println("No enemies here. Safe for now.");
         }
     }
 
@@ -126,25 +126,83 @@ public class RPGGame {
         System.out.println(monster.getName() + " HP: " + monster.currentHP + "/" + monster.maxHP);
 
         while (player.isAlive() && monster.isAlive()) {
-            playerTurn(monster);
-            if (monster.isAlive()) {
-                monsterTurn(monster);
+            if (player.speed >= monster.getSpeed()) {
+                playerTurn(monster);
+                if (monster.isAlive()) {
+                    monsterTurn(monster);
+                }
             } else {
-                mosnterTurn(monster);
-                if(player.isAlive()) {
-                    playerTirn(monster);
+                monsterTurn(monster);
+                if (player.isAlive()) {
+                    playerTurn(monster);
                 }
             }
         }
-        
+
         if (player.isAlive()) {
+            System.out.println("You defeated the " + monster.getName() + "!");
+            player.levelUp();
+        } else {
+            System.out.println("You were defeated by the " + monster.getName() + "...");
+        }
+    }
+
+    private void playerTurn(Monster monster) {
+        System.out.println("\nYour turn! Choose an action: (attack, stats)");
+        String action = scanner.nextLine().trim().toLowerCase();
+        switch (action) {
+            case "attack":
+                player.attack(monster);
+                break;
+            case "stats":
+                player.showStats();
+                playerTurn(monster);
+                break;
+            default:
+                System.out.println("Invalid action. Defaulting to attack.");
+                player.attack(monster);
+        }
+    }
+
+    private void monsterTurn(Monster monster) {
+        System.out.println("\n" + monster.getName() + "'s turn.");
+        monster.attack(player);
+        System.out.println(player.getName() + " HP: " + player.currentHP + "/" + player.maxHP);
     }
 
     private void allocateStats() {
+        if (player.statPoints <= 0) {
+            System.out.println("You don't have any stat points to allocate.");
+            return;
+        }
+        System.out.println("You have " + player.statPoints + " stat points available.");
+        try {
+            System.out.print("Allocate to Atk: ");
+            int atk = Integer.parseInt(scanner.nextLine());
+            System.out.print("Allocate to M.Atk: ");
+            int mAtk = Integer.parseInt(scanner.nextLine());
+            System.out.print("Allocate to Def: ");
+            int def = Integer.parseInt(scanner.nextLine());
+            System.out.print("Allocate to M.Def: ");
+            int mDef = Integer.parseInt(scanner.nextLine());
+            System.out.print("Allocate to Intelligence: ");
+            int intelligence = Integer.parseInt(scanner.nextLine());
+            System.out.print("Allocate to Speed: ");
+            int speed = Integer.parseInt(scanner.nextLine());
+            System.out.print("Allocate to Luck: ");
+            int luck = Integer.parseInt(scanner.nextLine());
 
+            boolean success = player.allocateStats(atk, mAtk, def, mDef, intelligence, speed, luck);
+            if (!success) {
+                System.out.println("Stat allocation failed. Please try again.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter numeric values only.");
+        }
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        RPGGame game = new RPGGame();
+        game.start();
     }
 }
